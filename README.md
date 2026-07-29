@@ -4,6 +4,12 @@ Protótipo local, somente para desktop, com dois jogadores no mesmo teclado.
 O pacote `Animated Prototype Character.zip` foi extraído e suas 223 imagens
 foram integradas ao jogo.
 
+## Direção de design
+
+A fonte de verdade para direção de arte, cores, tipografia, HUD, modais e menus
+futuros está em [`docs/design.md`](docs/design.md). Consulte esse documento
+antes de criar ou alterar componentes visuais.
+
 ## Como abrir
 
 No Windows, dê dois cliques em `INICIAR-JOGO.bat`. O servidor local será aberto
