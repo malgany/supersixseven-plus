@@ -444,11 +444,12 @@ kbd {
 .timer-block {
   position: relative;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   justify-items: center;
   min-height: 82px;
-  align-content: center;
+  align-content: stretch;
   margin-top: 0;
-  padding: 10px 10px 7px;
+  padding: 10px 10px 6px;
   border: 3px solid #050505;
   background: linear-gradient(180deg, #28231d, #090909);
   color: #fff;
@@ -483,17 +484,23 @@ kbd {
 }
 
 .timer {
-  margin-top: 0;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  margin: 0;
   font-family: Impact, "Arial Black", var(--font-geist-mono), monospace;
   font-size: clamp(37px, 4.2vw, 66px);
-  font-style: italic;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
   font-weight: 950;
-  letter-spacing: -0.09em;
-  line-height: 0.88;
+  letter-spacing: 0;
+  line-height: 1;
   -webkit-text-stroke: 2px #070707;
   text-shadow:
     3px 3px 0 var(--danger),
     0 4px 24px rgba(0, 0, 0, 0.72);
+  transform: translateY(-1px);
 }
 
 .stage-tag {
