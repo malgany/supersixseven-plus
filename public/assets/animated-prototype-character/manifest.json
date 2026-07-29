@@ -1,0 +1,99 @@
+{
+  "id": "animated-prototype-character",
+  "displayName": "Animated Prototype Character",
+  "license": "CC0",
+  "sourceArchive": "Animated Prototype Character.zip",
+  "frameSize": {
+    "width": 512,
+    "height": 512
+  },
+  "anchor": {
+    "x": 256,
+    "groundY": 360
+  },
+  "variants": {
+    "base": {
+      "folder": "Base Character",
+      "label": "Desarmado",
+      "animations": {
+        "attack": 13,
+        "death": 5,
+        "hit": 3,
+        "idle": 4,
+        "jump": 8,
+        "roll": 7,
+        "run": 8,
+        "slide": 5,
+        "walk": 8
+      }
+    },
+    "pistol": {
+      "folder": "Pistol",
+      "label": "Pistola",
+      "animations": {
+        "attack": 3,
+        "death": 7,
+        "hit": 3,
+        "idle": 4,
+        "jump": 8,
+        "roll": 7,
+        "run": 8,
+        "slide": 5,
+        "walk": 8
+      }
+    },
+    "rifle": {
+      "folder": "Rifle",
+      "label": "Rifle",
+      "animations": {
+        "attack": 2,
+        "death": 7,
+        "hit": 3,
+        "idle": 4,
+        "jump": 8,
+        "roll": 7,
+        "run": 8,
+        "slide": 5,
+        "walk": 8
+      }
+    },
+    "sword": {
+      "folder": "Sword",
+      "label": "Espada",
+      "animations": {
+        "attack": 6,
+        "death": 8,
+        "hit": 3,
+        "idle": 4,
+        "jump": 8,
+        "roll": 7,
+        "run": 8,
+        "slide": 5,
+        "walk": 8
+      }
+    }
+  },
+  "timing": {
+    "idleMsPerFrame": 150,
+    "walkMsPerFrame": 95,
+    "runMsPerFrame": 72,
+    "jumpMsPerFrame": 82,
+    "rollMsPerFrame": 60,
+    "slideMsPerFrame": 70,
+    "hitMsPerFrame": 90,
+    "deathMsPerFrame": 120
+  },
+  "notes": {
+    "damage": "Mapeado para hit.",
+    "punch": "Mapeado para Base Character/attack.",
+    "drops": "Não existe no pacote; os ataques de Pistol e Rifle foram mapeados como disparos.",
+    "missing": [
+      "crouch",
+      "block",
+      "special",
+      "ultimate",
+      "getUp",
+      "audio"
+    ]
+  }
+}
