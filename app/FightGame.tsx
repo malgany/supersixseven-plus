@@ -83,10 +83,11 @@ const TOTAL_SPRITES = CHARACTER_SETS.reduce(
 
 const CANVAS_WIDTH = 1280;
 const CANVAS_HEIGHT = 720;
-const GROUND_Y = 596;
+const GROUND_Y = 570;
 const LEFT_BOUND = 96;
 const RIGHT_BOUND = CANVAS_WIDTH - 96;
 const FIGHTER_DISTANCE = 106;
+const STAGE_BACKGROUND_URL = "assets/stages/foundry-hazard-v2.png";
 
 const WEAPON_LABELS: Record<CharacterSet, string> = {
   "Base Character": "Punhos",
@@ -363,7 +364,7 @@ function spriteUrl(
 ): string {
   const folder = encodeURIComponent(set);
   const file = encodeURIComponent(`${animation} (${frame}).png`);
-  return `/assets/animated-prototype-character/${folder}/${file}`;
+  return `assets/animated-prototype-character/${folder}/${file}`;
 }
 
 function setAnimation(
@@ -729,95 +730,45 @@ function updateEffects(game: GameState, deltaSeconds: number) {
   );
 }
 
-function drawArena(ctx: CanvasRenderingContext2D) {
-  const sky = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
-  sky.addColorStop(0, "#070b11");
-  sky.addColorStop(0.58, "#161c21");
-  sky.addColorStop(1, "#0a0d10");
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+function drawArena(
+  ctx: CanvasRenderingContext2D,
+  stageBackground: HTMLImageElement | null,
+) {
+  if (stageBackground?.complete && stageBackground.naturalWidth > 0) {
+    ctx.drawImage(stageBackground, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  } else {
+    const fallback = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
+    fallback.addColorStop(0, "#090b0d");
+    fallback.addColorStop(0.58, "#39281f");
+    fallback.addColorStop(1, "#13100e");
+    ctx.fillStyle = fallback;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
 
-  const glow = ctx.createRadialGradient(640, 340, 40, 640, 340, 530);
-  glow.addColorStop(0, "rgba(102, 128, 134, 0.18)");
-  glow.addColorStop(0.52, "rgba(38, 55, 60, 0.1)");
-  glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-  ctx.fillStyle = glow;
+  const hudShade = ctx.createLinearGradient(0, 0, 0, 184);
+  hudShade.addColorStop(0, "rgba(0, 0, 0, 0.78)");
+  hudShade.addColorStop(0.68, "rgba(0, 0, 0, 0.28)");
+  hudShade.addColorStop(1, "rgba(0, 0, 0, 0)");
+  ctx.fillStyle = hudShade;
+  ctx.fillRect(0, 0, CANVAS_WIDTH, 184);
+
+  const vignette = ctx.createRadialGradient(640, 358, 230, 640, 358, 790);
+  vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+  vignette.addColorStop(0.72, "rgba(0, 0, 0, 0.04)");
+  vignette.addColorStop(1, "rgba(0, 0, 0, 0.38)");
+  ctx.fillStyle = vignette;
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
   ctx.save();
-  ctx.globalAlpha = 0.62;
-  ctx.strokeStyle = "#33434a";
+  ctx.strokeStyle = "rgba(255, 196, 65, 0.48)";
   ctx.lineWidth = 2;
-  for (let x = 50; x < CANVAS_WIDTH; x += 118) {
-    ctx.beginPath();
-    ctx.moveTo(x, 82);
-    ctx.lineTo(x + 62, 82);
-    ctx.lineTo(x + 88, 108);
-    ctx.lineTo(x + 88, 394);
-    ctx.stroke();
-  }
+  ctx.shadowColor = "#ff9d1f";
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.moveTo(86, GROUND_Y + 8);
+  ctx.lineTo(CANVAS_WIDTH - 86, GROUND_Y + 8);
+  ctx.stroke();
   ctx.restore();
-
-  ctx.fillStyle = "#11171b";
-  ctx.beginPath();
-  ctx.moveTo(0, 438);
-  ctx.lineTo(CANVAS_WIDTH, 438);
-  ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
-  ctx.lineTo(0, CANVAS_HEIGHT);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.save();
-  ctx.strokeStyle = "rgba(117, 154, 160, 0.2)";
-  ctx.lineWidth = 1;
-  for (let x = -220; x <= CANVAS_WIDTH + 220; x += 100) {
-    ctx.beginPath();
-    ctx.moveTo(640, 438);
-    ctx.lineTo(x, CANVAS_HEIGHT);
-    ctx.stroke();
-  }
-  for (let y = 470; y < CANVAS_HEIGHT; y += 44) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(CANVAS_WIDTH, y);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  const platform = ctx.createLinearGradient(0, 520, 0, 690);
-  platform.addColorStop(0, "#30383b");
-  platform.addColorStop(0.52, "#20272a");
-  platform.addColorStop(1, "#101518");
-  ctx.fillStyle = platform;
-  ctx.beginPath();
-  ctx.moveTo(72, 566);
-  ctx.lineTo(1208, 566);
-  ctx.lineTo(1254, 646);
-  ctx.lineTo(1164, 682);
-  ctx.lineTo(116, 682);
-  ctx.lineTo(26, 646);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.strokeStyle = "#557078";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(72, 566);
-  ctx.lineTo(1208, 566);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(105, 237, 255, 0.18)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.ellipse(640, 607, 430, 48, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(640, 565);
-  ctx.lineTo(640, 681);
-  ctx.stroke();
-
-  ctx.fillStyle = "rgba(255,255,255,0.035)";
-  ctx.fillRect(0, 434, CANVAS_WIDTH, 4);
 }
 
 function drawEffects(ctx: CanvasRenderingContext2D, game: GameState) {
@@ -940,20 +891,27 @@ function drawEndState(ctx: CanvasRenderingContext2D, game: GameState) {
     return;
   }
   ctx.save();
-  ctx.fillStyle = "rgba(4, 7, 9, 0.56)";
-  ctx.fillRect(0, 238, CANVAS_WIDTH, 160);
+  ctx.fillStyle = "rgba(5, 4, 3, 0.72)";
+  ctx.fillRect(0, 222, CANVAS_WIDTH, 190);
+  ctx.fillStyle = "#f6b91f";
+  ctx.fillRect(0, 222, CANVAS_WIDTH, 8);
+  ctx.fillRect(0, 404, CANVAS_WIDTH, 8);
   ctx.textAlign = "center";
-  ctx.fillStyle = "#f5f7f2";
-  ctx.shadowColor = "#ffffff";
-  ctx.shadowBlur = 22;
-  ctx.font = "900 66px ui-sans-serif, system-ui, sans-serif";
-  ctx.fillText(game.result.startsWith("K.O.") ? "K.O." : "TEMPO", 640, 310);
+  ctx.fillStyle = "#fff9e9";
+  ctx.strokeStyle = "#070707";
+  ctx.lineWidth = 12;
+  ctx.lineJoin = "round";
+  ctx.font = "italic 950 76px Impact, ui-sans-serif, system-ui, sans-serif";
+  const resultTitle = game.result.startsWith("K.O.") ? "K.O." : "TEMPO";
+  ctx.strokeText(resultTitle, 640, 307);
+  ctx.fillText(resultTitle, 640, 307);
   ctx.shadowBlur = 0;
-  ctx.fillStyle = "#c8d1d0";
-  ctx.font = "700 22px ui-monospace, SFMono-Regular, Menlo, monospace";
-  ctx.fillText(game.result, 640, 352);
-  ctx.font = "500 15px ui-monospace, SFMono-Regular, Menlo, monospace";
-  ctx.fillText("PRESSIONE R PARA NOVA LUTA", 640, 382);
+  ctx.fillStyle = "#f6b91f";
+  ctx.font = "900 23px ui-monospace, SFMono-Regular, Menlo, monospace";
+  ctx.fillText(game.result, 640, 353);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 14px ui-monospace, SFMono-Regular, Menlo, monospace";
+  ctx.fillText("PRESSIONE R PARA NOVA LUTA", 640, 385);
   ctx.restore();
 }
 
@@ -961,10 +919,11 @@ function drawGame(
   ctx: CanvasRenderingContext2D,
   game: GameState,
   sprites: Map<string, HTMLImageElement>,
+  stageBackground: HTMLImageElement | null,
 ) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  drawArena(ctx);
+  drawArena(ctx, stageBackground);
   drawEffects(ctx, game);
 
   const fighters =
@@ -997,13 +956,37 @@ function ControlMap({ entries }: { entries: ControlEntry[] }) {
 export function FightGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const spriteCacheRef = useRef<Map<string, HTMLImageElement>>(new Map());
+  const stageImageRef = useRef<HTMLImageElement | null>(null);
   const gameRef = useRef<GameState>(createGame());
   const [loading, setLoading] = useState<LoadingState>({
     loaded: 0,
     failed: 0,
     ready: false,
   });
+  const [stageReady, setStageReady] = useState(false);
   const [hud, setHud] = useState<HudState>(() => hudFor(createGame()));
+
+  useEffect(() => {
+    let cancelled = false;
+    const image = new Image();
+    image.decoding = "async";
+    image.onload = () => {
+      if (!cancelled) {
+        stageImageRef.current = image;
+        setStageReady(true);
+      }
+    };
+    image.onerror = () => {
+      if (!cancelled) {
+        setStageReady(true);
+      }
+    };
+    image.src = STAGE_BACKGROUND_URL;
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -1068,7 +1051,7 @@ export function FightGame() {
   }, []);
 
   useEffect(() => {
-    if (!loading.ready) {
+    if (!loading.ready || !stageReady) {
       return;
     }
 
@@ -1229,7 +1212,12 @@ export function FightGame() {
 
       game.p1.hitFlash = Math.max(0, game.p1.hitFlash - deltaSeconds);
       game.p2.hitFlash = Math.max(0, game.p2.hitFlash - deltaSeconds);
-      drawGame(context, game, spriteCacheRef.current);
+      drawGame(
+        context,
+        game,
+        spriteCacheRef.current,
+        stageImageRef.current,
+      );
 
       if (now - lastHudSync > 50) {
         lastHudSync = now;
@@ -1238,7 +1226,12 @@ export function FightGame() {
       animationFrame = requestAnimationFrame(tick);
     };
 
-    drawGame(context, gameRef.current, spriteCacheRef.current);
+    drawGame(
+      context,
+      gameRef.current,
+      spriteCacheRef.current,
+      stageImageRef.current,
+    );
     setHud(hudFor(gameRef.current));
     animationFrame = requestAnimationFrame(tick);
 
@@ -1249,9 +1242,11 @@ export function FightGame() {
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onBlur);
     };
-  }, [loading.ready]);
+  }, [loading.ready, stageReady]);
 
-  const loadingLabel = loading.ready
+  const loadingLabel = loading.ready && !stageReady
+    ? "Preparando o cenário"
+    : loading.ready
     ? loading.failed > 0
       ? `${loading.loaded}/${TOTAL_SPRITES} sprites · ${loading.failed} fallback`
       : `${loading.loaded}/${TOTAL_SPRITES} sprites prontos`
@@ -1297,6 +1292,11 @@ export function FightGame() {
           Seu navegador precisa oferecer suporte a Canvas para exibir a luta.
         </canvas>
 
+        <div className="stage-tag" aria-hidden="true">
+          <span>SETOR 07</span>
+          <strong>FORJA DE RISCO</strong>
+        </div>
+
         <div className="hud">
           <section
             className="hud-player hud-player--p1"
@@ -1326,6 +1326,8 @@ export function FightGame() {
                 className="health-fill"
                 style={{ width: `${hud.p1Health}%` }}
               />
+              <span className="bar-caption">VIDA</span>
+              <strong className="bar-value">{hud.p1Health}</strong>
             </div>
             <div
               className="super-track"
@@ -1340,11 +1342,13 @@ export function FightGame() {
                 className={`super-fill${hud.p1Super >= 100 ? " is-ready" : ""}`}
                 style={{ width: `${hud.p1Super}%` }}
               />
+              <span className="bar-caption">SUPER</span>
             </div>
           </section>
 
           <div className="timer-block">
-            <span className="round-label">ROUND 1</span>
+            <span className="round-label">ROUND 01</span>
+            <span className="timer-label">TEMPO</span>
             <strong
               className="timer"
               data-testid="timer"
@@ -1382,6 +1386,8 @@ export function FightGame() {
                 className="health-fill"
                 style={{ width: `${hud.p2Health}%` }}
               />
+              <span className="bar-caption">VIDA</span>
+              <strong className="bar-value">{hud.p2Health}</strong>
             </div>
             <div
               className="super-track"
@@ -1396,6 +1402,7 @@ export function FightGame() {
                 className={`super-fill${hud.p2Super >= 100 ? " is-ready" : ""}`}
                 style={{ width: `${hud.p2Super}%` }}
               />
+              <span className="bar-caption">SUPER</span>
             </div>
           </section>
         </div>
@@ -1409,7 +1416,7 @@ export function FightGame() {
           {hud.status}
         </div>
 
-        {!loading.ready && (
+        {(!loading.ready || !stageReady) && (
           <div
             className="loading-overlay"
             role="status"
